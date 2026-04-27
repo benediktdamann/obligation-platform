@@ -12,15 +12,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Obligation, ObligationsFilters } from "@/lib/obligation-types";
+import { sourceLabel, formatObligationRef } from "@/lib/obligation-types";
 import type { SerializableLookups } from "@/lib/lookup-types";
 import { translateCode } from "@/lib/lookup-types";
 
-// ── Colour maps ──────────────────────────────────────────────────────────────
+// ── Colour maps (keyed by normalized prefix) ─────────────────────────────────
 
 const SOURCE_CLS: Record<string, string> = {
   AMLR: "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50",
   AMLD6: "border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-50",
-  ToFR: "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-50",
+  TOFR: "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-50",
 };
 
 const SEVERITY_CLS: Record<string, string> = {
@@ -34,12 +35,11 @@ const SEVERITY_CLS: Record<string, string> = {
 
 function SourceBadge({ source }: { source: string | null }) {
   if (!source) return <span className="text-muted-foreground">—</span>;
+  const label = sourceLabel(source);
+  const prefix = source.split("_")[0].toUpperCase();
+  const cls = SOURCE_CLS[prefix] ?? "bg-muted text-foreground";
   return (
-    <Badge
-      className={`border font-mono text-xs ${SOURCE_CLS[source] ?? "bg-muted text-foreground"}`}
-    >
-      {source}
-    </Badge>
+    <Badge className={`border font-mono text-xs ${cls}`}>{label}</Badge>
   );
 }
 
@@ -88,29 +88,17 @@ function TypesBadges({
 
 function AddresseeCell({
   addressee_categories,
-  applicable_entity_types,
   lookups,
 }: {
   addressee_categories: string[] | null;
-  applicable_entity_types: string[] | null;
   lookups: SerializableLookups;
 }) {
   const cats = addressee_categories ?? [];
-  const types = applicable_entity_types ?? [];
   if (!cats.length) return <span className="text-muted-foreground">—</span>;
-  const primary = translateCode(cats[0], lookups.addresseeCategories);
-  const moreCats = cats.length > 1 ? ` +${cats.length - 1}` : "";
-  const typeLabel =
-    types.length > 0 ? (
-      <span className="text-muted-foreground"> ({types.length} Typen)</span>
-    ) : null;
-  return (
-    <span className="text-sm whitespace-nowrap">
-      {primary}
-      {moreCats}
-      {typeLabel}
-    </span>
+  const labels = cats.map((c) =>
+    translateCode(c, lookups.addresseeCategories)
   );
+  return <span className="text-sm">{labels.join(", ")}</span>;
 }
 
 // ── Sortable header ──────────────────────────────────────────────────────────
@@ -156,15 +144,12 @@ function SortableHead({
 
 function TableSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border">
+    <div className="rounded-xl border">
       <div className="border-b bg-muted/50 px-4 py-3">
         <Skeleton className="h-4 w-48" />
       </div>
       {Array.from({ length: 10 }).map((_, i) => (
-        <div
-          key={i}
-          className="flex gap-4 border-b px-4 py-3.5 last:border-0"
-        >
+        <div key={i} className="flex gap-4 border-b px-4 py-3.5 last:border-0">
           <Skeleton className="h-4 w-12 shrink-0" />
           <Skeleton className="h-4 w-20 shrink-0" />
           <Skeleton className="h-4 flex-1" />
@@ -210,84 +195,79 @@ export function ObligationsTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="sticky top-0 z-10 bg-muted/50">
-            <TableRow className="hover:bg-transparent border-b">
-              <SortableHead
-                label="Quelle"
-                field="primary_source_id"
-                sortBy={filters.sortBy}
-                sortDir={filters.sortDir}
-                onSort={onSort}
-                className="w-16"
-              />
-              <SortableHead
-                label="Referenz"
-                field="primary_article_ref"
-                sortBy={filters.sortBy}
-                sortDir={filters.sortDir}
-                onSort={onSort}
-                className="w-28"
-              />
-              <TableHead>Anforderung</TableHead>
-              <TableHead className="w-44">Impact-Area</TableHead>
-              <TableHead className="w-44">Verpflichtete</TableHead>
-              <SortableHead
-                label="Pflichtgrad"
-                field="severity"
-                sortBy={filters.sortBy}
-                sortDir={filters.sortDir}
-                onSort={onSort}
-                className="w-32"
-              />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {obligations.map((o, idx) => {
-              const ref = [o.primary_article_ref, o.paragraph_ref]
-                .filter(Boolean)
-                .join(" §");
-              const text = o.requirement_text_plain ?? "";
+    <div className="rounded-xl border">
+      <Table className="table-fixed">
+        <TableHeader className="sticky top-0 z-10 bg-muted/50">
+          <TableRow className="hover:bg-transparent border-b">
+            <SortableHead
+              label="Quelle"
+              field="primary_source_id"
+              sortBy={filters.sortBy}
+              sortDir={filters.sortDir}
+              onSort={onSort}
+              className="w-[80px]"
+            />
+            <SortableHead
+              label="Referenz"
+              field="primary_article_ref"
+              sortBy={filters.sortBy}
+              sortDir={filters.sortDir}
+              onSort={onSort}
+              className="w-[130px]"
+            />
+            <TableHead>Anforderung</TableHead>
+            <TableHead className="w-[150px]">Impact-Area</TableHead>
+            <TableHead className="w-[180px]">Verpflichtete</TableHead>
+            <SortableHead
+              label="Pflichtgrad"
+              field="severity"
+              sortBy={filters.sortBy}
+              sortDir={filters.sortDir}
+              onSort={onSort}
+              className="w-[130px]"
+            />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {obligations.map((o, idx) => {
+            const ref = formatObligationRef(
+              o.primary_article_ref,
+              o.paragraph_ref
+            );
+            const text = o.requirement_text_plain ?? "";
 
-              return (
-                <TableRow
-                  key={o.id ?? idx}
-                  className="cursor-pointer transition-colors hover:bg-muted/30"
-                  onClick={() => onRowClick(o)}
-                >
-                  <TableCell className="py-3">
-                    <SourceBadge source={o.primary_source_id} />
-                  </TableCell>
-                  <TableCell className="py-3 font-mono text-xs whitespace-nowrap text-muted-foreground">
-                    {ref || "—"}
-                  </TableCell>
-                  <TableCell className="py-3 text-sm text-muted-foreground">
-                    <span className="line-clamp-2 leading-relaxed">{text}</span>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <TypesBadges
-                      types={o.obligation_types}
-                      lookups={lookups}
-                    />
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <AddresseeCell
-                      addressee_categories={o.addressee_categories}
-                      applicable_entity_types={o.applicable_entity_types}
-                      lookups={lookups}
-                    />
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <SeverityBadge code={o.severity} lookups={lookups} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
+            return (
+              <TableRow
+                key={o.id ?? idx}
+                className="cursor-pointer transition-colors hover:bg-muted/30"
+                onClick={() => onRowClick(o)}
+              >
+                <TableCell>
+                  <SourceBadge source={o.primary_source_id} />
+                </TableCell>
+                <TableCell className="font-mono text-xs whitespace-nowrap text-muted-foreground">
+                  {ref || "—"}
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  <span className="line-clamp-2 leading-relaxed">{text}</span>
+                </TableCell>
+                <TableCell>
+                  <TypesBadges types={o.obligation_types} lookups={lookups} />
+                </TableCell>
+                <TableCell>
+                  <AddresseeCell
+                    addressee_categories={o.addressee_categories}
+                    lookups={lookups}
+                  />
+                </TableCell>
+                <TableCell>
+                  <SeverityBadge code={o.severity} lookups={lookups} />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 }

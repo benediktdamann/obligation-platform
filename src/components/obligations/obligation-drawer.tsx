@@ -4,13 +4,14 @@ import { useEffect } from "react";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Obligation } from "@/lib/obligation-types";
+import { sourceLabel, formatObligationRef } from "@/lib/obligation-types";
 import type { SerializableLookups } from "@/lib/lookup-types";
 import { translateCode } from "@/lib/lookup-types";
 
 const SOURCE_CLS: Record<string, string> = {
   AMLR: "border-blue-200 bg-blue-50 text-blue-700",
   AMLD6: "border-purple-200 bg-purple-50 text-purple-700",
-  ToFR: "border-orange-200 bg-orange-50 text-orange-700",
+  TOFR: "border-orange-200 bg-orange-50 text-orange-700",
 };
 
 const SEVERITY_CLS: Record<string, string> = {
@@ -64,12 +65,11 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
   if (!isOpen || !obligation) return null;
 
   const o = obligation;
-  const sourceClass = SOURCE_CLS[o.primary_source_id ?? ""] ?? "";
+  const sourcePrefix = (o.primary_source_id ?? "").split("_")[0].toUpperCase();
+  const sourceClass = SOURCE_CLS[sourcePrefix] ?? "";
   const severityClass =
     SEVERITY_CLS[o.severity?.toLowerCase() ?? ""] ?? "bg-muted text-foreground";
-  const ref = [o.primary_article_ref, o.paragraph_ref]
-    .filter(Boolean)
-    .join(" §");
+  const ref = formatObligationRef(o.primary_article_ref, o.paragraph_ref);
   const formattedDate = o.effective_from
     ? new Date(o.effective_from).toLocaleDateString("de-DE", {
         day: "2-digit",
@@ -99,7 +99,7 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
             <div className="flex flex-wrap items-center gap-2">
               {o.primary_source_id && (
                 <Badge className={`border font-mono text-xs ${sourceClass}`}>
-                  {o.primary_source_id}
+                  {sourceLabel(o.primary_source_id)}
                 </Badge>
               )}
               <span className="font-mono text-sm text-muted-foreground">
