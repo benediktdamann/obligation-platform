@@ -22,7 +22,7 @@ const SELECT_FIELDS = [
   "obligation_types",
   "addressee_categories",
   "applicable_entity_types",
-  "jurisdiction",
+  "applies_to_jurisdictions",
   "effective_from",
   "implementation_guidance",
   "checklist_items",

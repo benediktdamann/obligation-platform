@@ -10,7 +10,7 @@ export type Obligation = {
   obligation_types: string[] | null;
   addressee_categories: string[] | null;
   applicable_entity_types: string[] | null;
-  jurisdiction: string | null;
+  applies_to_jurisdictions: string[] | null;
   effective_from: string | null;
   implementation_guidance: string | null;
   checklist_items: string[] | null;

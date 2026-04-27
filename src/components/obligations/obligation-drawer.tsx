@@ -185,8 +185,10 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
           <Section title="Wo gilt das?">
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-xs text-muted-foreground">Jurisdiktion</p>
-                <p>{o.jurisdiction ?? "EU"}</p>
+                <p className="text-xs text-muted-foreground">Jurisdiktionen</p>
+                <p>
+                  {o.applies_to_jurisdictions?.join(", ") ?? "EU"}
+                </p>
               </div>
               {formattedDate && (
                 <div>
