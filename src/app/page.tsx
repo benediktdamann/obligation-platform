@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ShieldCheck, FileText, Bell, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ShieldCheck, FileText, Bell, Search, ArrowRight } from "lucide-react";
 
 const features = [
   {
@@ -81,7 +83,16 @@ export default function Home() {
           })}
         </div>
 
-        <div className="mt-16 flex justify-center">
+        <div className="mt-12 flex justify-center">
+          <Button asChild size="lg">
+            <Link href="/obligations">
+              Obligations anzeigen
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="mt-8 flex justify-center">
           <p className="text-xs text-muted-foreground">
             Built for compliance teams operating under EU AML/CFT regulations
           </p>
