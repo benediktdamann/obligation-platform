@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ShieldCheck, FileText, Bell, Search, ArrowRight } from "lucide-react";
 
 const features = [
@@ -84,12 +84,10 @@ export default function Home() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <Button asChild size="lg">
-            <Link href="/obligations">
-              Obligations anzeigen
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <Link href="/obligations" className={buttonVariants({ size: "lg" })}>
+            Obligations anzeigen
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </div>
 
         <div className="mt-8 flex justify-center">
