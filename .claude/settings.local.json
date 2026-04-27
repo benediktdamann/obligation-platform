@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/bened/Documents/Claude/**)",
+      "Bash(npx create-next-app@latest obligation-platform --typescript --tailwind --app --eslint --src-dir --import-alias \"@/*\" --no-turbopack --yes)"
+    ]
+  }
+}
