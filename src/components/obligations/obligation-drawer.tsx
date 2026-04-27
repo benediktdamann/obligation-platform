@@ -8,15 +8,15 @@ import type { SerializableLookups } from "@/lib/lookup-types";
 import { translateCode } from "@/lib/lookup-types";
 
 const SOURCE_CLS: Record<string, string> = {
-  AMLR: "border-blue-200 bg-blue-100 text-blue-800",
-  AMLD6: "border-purple-200 bg-purple-100 text-purple-800",
-  ToFR: "border-orange-200 bg-orange-100 text-orange-800",
+  AMLR: "border-blue-200 bg-blue-50 text-blue-700",
+  AMLD6: "border-purple-200 bg-purple-50 text-purple-700",
+  ToFR: "border-orange-200 bg-orange-50 text-orange-700",
 };
 
 const SEVERITY_CLS: Record<string, string> = {
-  mandatory: "border-red-200 bg-red-100 text-red-800",
-  conditional: "border-yellow-200 bg-yellow-100 text-yellow-800",
-  recommended: "border-blue-200 bg-blue-100 text-blue-800",
+  mandatory: "border-red-200 bg-red-50 text-red-700",
+  conditional: "border-yellow-200 bg-yellow-50 text-yellow-700",
+  recommended: "border-blue-200 bg-blue-50 text-blue-700",
 };
 
 type Props = {
@@ -33,8 +33,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-2">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+    <section className="space-y-3">
+      <h3 className="border-b pb-2 text-sm font-medium text-foreground">
         {title}
       </h3>
       {children}
@@ -91,39 +91,46 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
       <div
         role="dialog"
         aria-modal="true"
-        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col overflow-hidden bg-background shadow-2xl"
+        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl flex-col overflow-hidden bg-background shadow-2xl"
       >
         {/* Header */}
-        <div className="flex shrink-0 items-start justify-between border-b px-6 py-4">
-          <div className="flex flex-wrap items-center gap-2">
-            {o.primary_source_id && (
-              <Badge className={`border font-mono text-xs ${sourceClass}`}>
-                {o.primary_source_id}
+        <div className="flex shrink-0 items-start justify-between border-b px-6 py-5">
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              {o.primary_source_id && (
+                <Badge className={`border font-mono text-xs ${sourceClass}`}>
+                  {o.primary_source_id}
+                </Badge>
+              )}
+              <span className="font-mono text-sm text-muted-foreground">
+                {ref || "—"}
+              </span>
+            </div>
+            {o.severity && (
+              <Badge className={`border text-xs px-2 py-0.5 ${severityClass}`}>
+                {translateCode(o.severity, lookups.severities)}
               </Badge>
             )}
-            <span className="font-mono text-sm text-muted-foreground">
-              {ref || "—"}
-            </span>
           </div>
           <button
             onClick={onClose}
             aria-label="Schließen"
-            className="ml-4 shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="ml-4 shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Scrollable body */}
-        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-5">
+        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
           {/* Anforderung */}
           <Section title="Anforderung">
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed text-foreground">
               {o.requirement_text_plain ?? "—"}
             </p>
           </Section>
 
-          {/* Was ist zu tun */}
+          {/* Impact-Area */}
           <Section title="Impact-Area">
             <div className="flex flex-wrap gap-1.5">
               {(o.obligation_types ?? []).length > 0 ? (
@@ -136,20 +143,13 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
                 <span className="text-sm text-muted-foreground">—</span>
               )}
             </div>
-            {o.severity && (
-              <div className="mt-2">
-                <Badge className={`border text-sm px-2.5 py-0.5 ${severityClass}`}>
-                  {translateCode(o.severity, lookups.severities)}
-                </Badge>
-              </div>
-            )}
           </Section>
 
-          {/* Wer ist verpflichtet */}
+          {/* Verpflichtete */}
           <Section title="Verpflichtete">
             {(o.addressee_categories ?? []).length > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-xs text-muted-foreground">
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">
                   Adressat-Kategorien
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -162,8 +162,8 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
               </div>
             )}
             {(o.applicable_entity_types ?? []).length > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-xs text-muted-foreground">
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">
                   Anwendbare Institut-Typen
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -182,17 +182,19 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
           </Section>
 
           {/* Wo gilt das */}
-          <Section title="Wo gilt das?">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <p className="text-xs text-muted-foreground">Jurisdiktionen</p>
-                <p>
-                  {o.applies_to_jurisdictions?.join(", ") ?? "EU"}
+          <Section title="Geltungsbereich">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Jurisdiktionen
                 </p>
+                <p>{o.applies_to_jurisdictions?.join(", ") ?? "EU"}</p>
               </div>
               {formattedDate && (
-                <div>
-                  <p className="text-xs text-muted-foreground">Gültig ab</p>
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Gültig ab
+                  </p>
                   <p>{formattedDate}</p>
                 </div>
               )}
@@ -211,13 +213,13 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
           {/* Checkliste */}
           {o.checklist_items && o.checklist_items.length > 0 && (
             <Section title="Checkliste">
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {o.checklist_items.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm">
+                  <li key={i} className="flex items-start gap-2.5 text-sm">
                     <span className="mt-0.5 shrink-0 text-muted-foreground">
                       ▸
                     </span>
-                    <span>{item}</span>
+                    <span className="leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>

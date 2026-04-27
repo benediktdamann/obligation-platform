@@ -2,6 +2,7 @@
 
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -17,16 +18,16 @@ import { translateCode } from "@/lib/lookup-types";
 // ── Colour maps ──────────────────────────────────────────────────────────────
 
 const SOURCE_CLS: Record<string, string> = {
-  AMLR: "border-blue-200 bg-blue-100 text-blue-800 hover:bg-blue-100",
-  AMLD6: "border-purple-200 bg-purple-100 text-purple-800 hover:bg-purple-100",
-  ToFR: "border-orange-200 bg-orange-100 text-orange-800 hover:bg-orange-100",
+  AMLR: "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50",
+  AMLD6: "border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-50",
+  ToFR: "border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-50",
 };
 
 const SEVERITY_CLS: Record<string, string> = {
-  mandatory: "border-red-200 bg-red-100 text-red-800 hover:bg-red-100",
+  mandatory: "border-red-200 bg-red-50 text-red-700 hover:bg-red-50",
   conditional:
-    "border-yellow-200 bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
-  recommended: "border-blue-200 bg-blue-100 text-blue-800 hover:bg-blue-100",
+    "border-yellow-200 bg-yellow-50 text-yellow-700 hover:bg-yellow-50",
+  recommended: "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-50",
 };
 
 // ── Sub-components ───────────────────────────────────────────────────────────
@@ -140,7 +141,7 @@ function SortableHead({
     : ChevronsUpDown;
   return (
     <TableHead
-      className={`cursor-pointer select-none hover:bg-muted/50 ${className ?? ""}`}
+      className={`cursor-pointer select-none hover:bg-muted/70 ${className ?? ""}`}
       onClick={() => onSort(field, nextDir)}
     >
       <div className="flex items-center gap-1">
@@ -155,18 +156,21 @@ function SortableHead({
 
 function TableSkeleton() {
   return (
-    <div className="rounded-md border">
-      {Array.from({ length: 12 }).map((_, i) => (
+    <div className="overflow-hidden rounded-xl border">
+      <div className="border-b bg-muted/50 px-4 py-3">
+        <Skeleton className="h-4 w-48" />
+      </div>
+      {Array.from({ length: 10 }).map((_, i) => (
         <div
           key={i}
-          className="flex gap-4 border-b px-3 py-3 last:border-0"
+          className="flex gap-4 border-b px-4 py-3.5 last:border-0"
         >
-          <div className="h-4 w-12 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-20 animate-pulse rounded bg-muted" />
-          <div className="h-4 flex-1 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-24 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-28 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+          <Skeleton className="h-4 w-12 shrink-0" />
+          <Skeleton className="h-4 w-20 shrink-0" />
+          <Skeleton className="h-4 flex-1" />
+          <Skeleton className="h-4 w-24 shrink-0" />
+          <Skeleton className="h-4 w-28 shrink-0" />
+          <Skeleton className="h-4 w-20 shrink-0" />
         </div>
       ))}
     </div>
@@ -196,7 +200,7 @@ export function ObligationsTable({
 
   if (!obligations.length) {
     return (
-      <div className="flex flex-col items-center gap-2 rounded-md border border-dashed py-16 text-center">
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed py-20 text-center">
         <p className="text-sm font-medium">Keine Anforderungen gefunden</p>
         <p className="text-xs text-muted-foreground">
           Versuche die Filter zurückzusetzen oder einen anderen Suchbegriff.
@@ -206,11 +210,11 @@ export function ObligationsTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden rounded-xl border">
       <div className="overflow-x-auto">
         <Table>
-          <TableHeader>
-            <TableRow>
+          <TableHeader className="sticky top-0 z-10 bg-muted/50">
+            <TableRow className="hover:bg-transparent border-b">
               <SortableHead
                 label="Quelle"
                 field="primary_source_id"
@@ -246,38 +250,36 @@ export function ObligationsTable({
                 .filter(Boolean)
                 .join(" §");
               const text = o.requirement_text_plain ?? "";
-              const truncated =
-                text.length > 180 ? text.slice(0, 180) + "…" : text;
 
               return (
                 <TableRow
                   key={o.id ?? idx}
-                  className="cursor-pointer"
+                  className="cursor-pointer transition-colors hover:bg-muted/30"
                   onClick={() => onRowClick(o)}
                 >
-                  <TableCell>
+                  <TableCell className="py-3">
                     <SourceBadge source={o.primary_source_id} />
                   </TableCell>
-                  <TableCell className="font-mono text-xs whitespace-nowrap text-muted-foreground">
+                  <TableCell className="py-3 font-mono text-xs whitespace-nowrap text-muted-foreground">
                     {ref || "—"}
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {truncated}
+                  <TableCell className="py-3 text-sm text-muted-foreground">
+                    <span className="line-clamp-2 leading-relaxed">{text}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-3">
                     <TypesBadges
                       types={o.obligation_types}
                       lookups={lookups}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-3">
                     <AddresseeCell
                       addressee_categories={o.addressee_categories}
                       applicable_entity_types={o.applicable_entity_types}
                       lookups={lookups}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-3">
                     <SeverityBadge code={o.severity} lookups={lookups} />
                   </TableCell>
                 </TableRow>

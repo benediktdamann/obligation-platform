@@ -46,7 +46,6 @@ export function ObligationsBrowser({
       const params = new URLSearchParams();
       const merged: ObligationsFilters = { ...currentFilters, ...updates };
 
-      // Filter changes always reset to page 1 unless page itself is being updated
       if (updates.page === undefined) merged.page = 1;
 
       if (merged.q) params.set("q", merged.q);
@@ -78,67 +77,72 @@ export function ObligationsBrowser({
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6">
-      {/* Breadcrumb + Header */}
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-8">
+      {/* Header */}
       <div className="mb-8">
         <Link
           href="/"
-          className="mb-3 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-4 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronLeft className="h-3 w-3" />
           Zurück zur Startseite
         </Link>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight">
           Obligation Browser
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          EU AML/CFT Regulatory Framework (AMLR, AMLD6, ToFR)
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          EU AML/CFT Regulatory Framework — AMLR · AMLD6 · ToFR
         </p>
       </div>
 
-      <StatsCards stats={stats} />
+      <div className="space-y-6">
+        <StatsCards stats={stats} />
 
-      <FilterBar
-        filters={currentFilters}
-        addresseeOptions={addresseeOptions}
-        onFilterChange={updateFilters}
-        isPending={isPending}
-      />
+        <FilterBar
+          filters={currentFilters}
+          addresseeOptions={addresseeOptions}
+          onFilterChange={updateFilters}
+          isPending={isPending}
+        />
 
-      <ObligationsTable
-        obligations={obligations}
-        lookups={lookups}
-        filters={currentFilters}
-        isPending={isPending}
-        onRowClick={setSelected}
-        onSort={handleSort}
-      />
+        <ObligationsTable
+          obligations={obligations}
+          lookups={lookups}
+          filters={currentFilters}
+          isPending={isPending}
+          onRowClick={setSelected}
+          onSort={handleSort}
+        />
 
-      {/* Pagination */}
-      {totalCount > 0 && (
-        <div className="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            Seite {currentPage} von {totalPages} ·{" "}
-            {totalCount.toLocaleString("de-DE")} Treffer gesamt
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => updateFilters({ page: currentPage - 1 })}
-              disabled={currentPage <= 1 || isPending}
-              className="rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Vorherige
-            </button>
-            <button
-              onClick={() => updateFilters({ page: currentPage + 1 })}
-              disabled={currentPage >= totalPages || isPending}
-              className="rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Nächste
-            </button>
+        {/* Pagination */}
+        {totalCount > 0 && (
+          <div className="flex flex-col items-center justify-between gap-3 border-t pt-4 sm:flex-row">
+            <p className="text-sm text-muted-foreground">
+              Seite {currentPage} von {totalPages} ·{" "}
+              <span className="font-medium text-foreground">
+                {totalCount.toLocaleString("de-DE")}
+              </span>{" "}
+              Treffer gesamt
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => updateFilters({ page: currentPage - 1 })}
+                disabled={currentPage <= 1 || isPending}
+                className="rounded-md border border-border px-4 py-1.5 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Vorherige
+              </button>
+              <button
+                onClick={() => updateFilters({ page: currentPage + 1 })}
+                disabled={currentPage >= totalPages || isPending}
+                className="rounded-md border border-border px-4 py-1.5 text-sm font-medium transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Nächste
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <ObligationDrawer
         obligation={selected}
