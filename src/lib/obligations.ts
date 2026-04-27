@@ -1,34 +1,10 @@
 import "server-only";
 import { createServerClient } from "@/lib/supabase/server";
+import type { Obligation, ObligationsFilters } from "@/lib/obligation-types";
+import { PAGE_SIZE } from "@/lib/obligation-types";
 
-export type Obligation = {
-  id: string;
-  primary_source_id: string | null;
-  primary_article_ref: string | null;
-  paragraph_ref: string | null;
-  requirement_text_plain: string | null;
-  severity: string | null;
-  obligation_types: string[] | null;
-  addressee_categories: string[] | null;
-  applicable_entity_types: string[] | null;
-  jurisdiction: string | null;
-  effective_from: string | null;
-  implementation_guidance: string | null;
-  checklist_items: string[] | null;
-};
-
-export type ObligationsFilters = {
-  q?: string;
-  source?: string;
-  severity?: string;
-  article?: string;
-  addressee?: string;
-  page?: number;
-  sortBy?: string;
-  sortDir?: "asc" | "desc";
-};
-
-export const PAGE_SIZE = 50;
+export type { Obligation, ObligationsFilters };
+export { PAGE_SIZE };
 
 const ALLOWED_SORT_FIELDS = new Set([
   "primary_source_id",
@@ -81,9 +57,7 @@ export async function getObligations(
   if (sortField) {
     query = query.order(sortField, { ascending: filters.sortDir !== "desc" });
   } else {
-    query = query
-      .order("primary_source_id")
-      .order("primary_article_ref");
+    query = query.order("primary_source_id").order("primary_article_ref");
   }
 
   const { data, count, error } = await query;

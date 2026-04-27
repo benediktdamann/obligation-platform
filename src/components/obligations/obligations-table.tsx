@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Obligation, ObligationsFilters } from "@/lib/obligations";
+import type { Obligation, ObligationsFilters } from "@/lib/obligation-types";
 import type { SerializableLookups } from "@/lib/lookup-types";
 import { translateCode } from "@/lib/lookup-types";
 

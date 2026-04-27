@@ -2,7 +2,7 @@
 
 import { Search, X, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { ObligationsFilters } from "@/lib/obligations";
+import type { ObligationsFilters } from "@/lib/obligation-types";
 
 const SELECT_CLS =
   "h-8 rounded-md border border-border bg-background px-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 disabled:opacity-50";

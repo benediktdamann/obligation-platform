@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import type { Obligation } from "@/lib/obligations";
+import type { Obligation } from "@/lib/obligation-types";
 import type { SerializableLookups } from "@/lib/lookup-types";
 import { translateCode } from "@/lib/lookup-types";
 
