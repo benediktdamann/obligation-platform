@@ -229,9 +229,9 @@ export function ObligationsTable({
               />
               <TableHead>Anforderung</TableHead>
               <TableHead className="w-44">Impact-Area</TableHead>
-              <TableHead className="w-44">Wer</TableHead>
+              <TableHead className="w-44">Verpflichtete</TableHead>
               <SortableHead
-                label="Pflicht"
+                label="Pflichtgrad"
                 field="severity"
                 sortBy={filters.sortBy}
                 sortDir={filters.sortDir}

@@ -146,7 +146,7 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
           </Section>
 
           {/* Wer ist verpflichtet */}
-          <Section title="Wer ist verpflichtet?">
+          <Section title="Verpflichtete">
             {(o.addressee_categories ?? []).length > 0 && (
               <div className="space-y-1.5">
                 <p className="text-xs text-muted-foreground">
