@@ -124,7 +124,7 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
           </Section>
 
           {/* Was ist zu tun */}
-          <Section title="Was ist zu tun?">
+          <Section title="Impact-Area">
             <div className="flex flex-wrap gap-1.5">
               {(o.obligation_types ?? []).length > 0 ? (
                 o.obligation_types!.map((t) => (

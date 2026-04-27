@@ -228,7 +228,7 @@ export function ObligationsTable({
                 className="w-28"
               />
               <TableHead>Anforderung</TableHead>
-              <TableHead className="w-44">Was</TableHead>
+              <TableHead className="w-44">Impact-Area</TableHead>
               <TableHead className="w-44">Wer</TableHead>
               <SortableHead
                 label="Pflicht"
