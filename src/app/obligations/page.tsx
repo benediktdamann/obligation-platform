@@ -1,5 +1,5 @@
 import { getLookups } from "@/lib/lookups";
-import { getObligations, getStats } from "@/lib/obligations";
+import { getObligations, getStats, getGlobalCount } from "@/lib/obligations";
 import { ObligationsBrowser } from "@/components/obligations/obligations-browser";
 
 type SearchParams = Promise<{
@@ -31,11 +31,13 @@ export default async function ObligationsPage({
     sortDir: (params.sortDir === "desc" ? "desc" : "asc") as "asc" | "desc",
   };
 
-  const [lookups, stats, { obligations, totalCount }] = await Promise.all([
-    getLookups(),
-    getStats(),
-    getObligations(filters),
-  ]);
+  const [lookups, stats, { obligations, totalCount }, globalCount] =
+    await Promise.all([
+      getLookups(),
+      getStats(filters),
+      getObligations(filters),
+      getGlobalCount(),
+    ]);
 
   return (
     <ObligationsBrowser
@@ -44,6 +46,7 @@ export default async function ObligationsPage({
       stats={stats}
       lookups={lookups}
       currentFilters={filters}
+      globalCount={globalCount}
     />
   );
 }

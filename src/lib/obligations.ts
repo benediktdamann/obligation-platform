@@ -30,6 +30,40 @@ const SELECT_FIELDS = [
   "regulatory_authorities",
 ].join(", ");
 
+// Applies WHERE clauses for the given filters to any Supabase query builder.
+// Uses `any` because the builder's generic chain type changes with every call.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function applyFilters(query: any, filters: ObligationsFilters): any {
+  if (filters.q)
+    query = query.ilike("requirement_text_plain", `%${filters.q}%`);
+
+  // ilike + prefix so "AMLR" matches "AMLR_2024_1624", case-insensitive for ToFR/TOFR
+  if (filters.source)
+    query = query.ilike("primary_source_id", `${filters.source}%`);
+
+  if (filters.severity)
+    query = query.eq("severity", filters.severity);
+
+  if (filters.article)
+    query = query.ilike("primary_article_ref", `%${filters.article}%`);
+
+  // Check IS NOT NULL *and* != '{}' to exclude rows with empty arrays
+  if (filters.addresseeType === "obliged")
+    query = query
+      .not("obliged_entities", "is", null)
+      .neq("obliged_entities", "{}");
+  if (filters.addresseeType === "regulatory")
+    query = query
+      .not("regulatory_authorities", "is", null)
+      .neq("regulatory_authorities", "{}");
+  if (filters.addresseeType === "stakeholder")
+    query = query
+      .not("internal_stakeholders", "is", null)
+      .neq("internal_stakeholders", "{}");
+
+  return query;
+}
+
 export async function getObligations(
   filters: ObligationsFilters
 ): Promise<{ obligations: Obligation[]; totalCount: number }> {
@@ -42,18 +76,7 @@ export async function getObligations(
     .select(SELECT_FIELDS, { count: "exact" })
     .range(offset, offset + PAGE_SIZE - 1);
 
-  if (filters.q)
-    query = query.ilike("requirement_text_plain", `%${filters.q}%`);
-  if (filters.source) query = query.eq("primary_source_id", filters.source);
-  if (filters.severity) query = query.eq("severity", filters.severity);
-  if (filters.article)
-    query = query.ilike("primary_article_ref", `%${filters.article}%`);
-  if (filters.addresseeType === "obliged")
-    query = query.not("obliged_entities", "is", null);
-  if (filters.addresseeType === "regulatory")
-    query = query.not("regulatory_authorities", "is", null);
-  if (filters.addresseeType === "stakeholder")
-    query = query.not("internal_stakeholders", "is", null);
+  query = applyFilters(query, filters);
 
   const sortField =
     filters.sortBy && ALLOWED_SORT_FIELDS.has(filters.sortBy)
@@ -75,23 +98,21 @@ export async function getObligations(
   };
 }
 
-export async function getStats() {
+/** Filter-aware severity breakdown. Pass filters to get counts within the active filter set. */
+export async function getStats(filters?: ObligationsFilters) {
   const supabase = await createServerClient();
 
+  const base = () =>
+    supabase.from("obligations").select("*", { count: "exact", head: true });
+
+  const withF = (q: ReturnType<typeof base>) =>
+    filters ? applyFilters(q, filters) : q;
+
   const [total, mandatory, conditional, recommended] = await Promise.all([
-    supabase.from("obligations").select("*", { count: "exact", head: true }),
-    supabase
-      .from("obligations")
-      .select("*", { count: "exact", head: true })
-      .eq("severity", "mandatory"),
-    supabase
-      .from("obligations")
-      .select("*", { count: "exact", head: true })
-      .eq("severity", "conditional"),
-    supabase
-      .from("obligations")
-      .select("*", { count: "exact", head: true })
-      .eq("severity", "recommended"),
+    withF(base()),
+    withF(base()).eq("severity", "mandatory"),
+    withF(base()).eq("severity", "conditional"),
+    withF(base()).eq("severity", "recommended"),
   ]);
 
   return {
@@ -100,4 +121,13 @@ export async function getStats() {
     conditional: conditional.count ?? 0,
     recommended: recommended.count ?? 0,
   };
+}
+
+/** Always returns the unfiltered total across all obligations. */
+export async function getGlobalCount(): Promise<number> {
+  const supabase = await createServerClient();
+  const { count } = await supabase
+    .from("obligations")
+    .select("*", { count: "exact", head: true });
+  return count ?? 0;
 }

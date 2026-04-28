@@ -25,6 +25,7 @@ type Props = {
   stats: Stats;
   lookups: SerializableLookups;
   currentFilters: ObligationsFilters;
+  globalCount: number;
 };
 
 export function ObligationsBrowser({
@@ -33,6 +34,7 @@ export function ObligationsBrowser({
   stats,
   lookups,
   currentFilters,
+  globalCount,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -73,6 +75,13 @@ export function ObligationsBrowser({
 
   const currentPage = currentFilters.page ?? 1;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const hasFilters = !!(
+    currentFilters.q ||
+    currentFilters.source ||
+    currentFilters.severity ||
+    currentFilters.article ||
+    currentFilters.addresseeType
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-8">
@@ -118,8 +127,17 @@ export function ObligationsBrowser({
               Seite {currentPage} von {totalPages} ·{" "}
               <span className="font-medium text-foreground">
                 {totalCount.toLocaleString("de-DE")}
-              </span>{" "}
-              Treffer gesamt
+              </span>
+              {hasFilters && globalCount !== totalCount && (
+                <>
+                  {" "}
+                  von{" "}
+                  <span className="font-medium text-foreground">
+                    {globalCount.toLocaleString("de-DE")}
+                  </span>
+                </>
+              )}{" "}
+              Pflichten
             </p>
             <div className="flex gap-2">
               <button
