@@ -25,7 +25,6 @@ type Props = {
   stats: Stats;
   lookups: SerializableLookups;
   currentFilters: ObligationsFilters;
-  addresseeOptions: Array<{ code: string; label_de: string }>;
 };
 
 export function ObligationsBrowser({
@@ -34,7 +33,6 @@ export function ObligationsBrowser({
   stats,
   lookups,
   currentFilters,
-  addresseeOptions,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -52,7 +50,7 @@ export function ObligationsBrowser({
       if (merged.source) params.set("source", merged.source);
       if (merged.severity) params.set("severity", merged.severity);
       if (merged.article) params.set("article", merged.article);
-      if (merged.addressee) params.set("addressee", merged.addressee);
+      if (merged.addresseeType) params.set("addresseeType", merged.addresseeType);
       if (merged.sortBy) params.set("sortBy", merged.sortBy);
       if (merged.sortDir) params.set("sortDir", merged.sortDir);
       if (merged.page && merged.page > 1)
@@ -100,7 +98,6 @@ export function ObligationsBrowser({
 
         <FilterBar
           filters={currentFilters}
-          addresseeOptions={addresseeOptions}
           onFilterChange={updateFilters}
           isPending={isPending}
         />

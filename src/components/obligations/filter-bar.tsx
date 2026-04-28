@@ -9,17 +9,11 @@ const SELECT_CLS =
 
 type Props = {
   filters: ObligationsFilters;
-  addresseeOptions: Array<{ code: string; label_de: string }>;
   onFilterChange: (updates: Partial<ObligationsFilters>) => void;
   isPending: boolean;
 };
 
-export function FilterBar({
-  filters,
-  addresseeOptions,
-  onFilterChange,
-  isPending,
-}: Props) {
+export function FilterBar({ filters, onFilterChange, isPending }: Props) {
   const [localSearch, setLocalSearch] = useState(filters.q ?? "");
   const [localArticle, setLocalArticle] = useState(filters.article ?? "");
   const searchRef = useRef<HTMLInputElement>(null);
@@ -37,7 +31,7 @@ export function FilterBar({
     filters.source ||
     filters.severity ||
     filters.article ||
-    filters.addressee
+    filters.addresseeType
   );
 
   function handleReset() {
@@ -48,7 +42,7 @@ export function FilterBar({
       source: undefined,
       severity: undefined,
       article: undefined,
-      addressee: undefined,
+      addresseeType: undefined,
     });
   }
 
@@ -121,20 +115,18 @@ export function FilterBar({
           className="h-9 w-28 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
 
-        {/* Adressat */}
+        {/* Adressaten-Typ */}
         <select
-          value={filters.addressee ?? ""}
+          value={filters.addresseeType ?? ""}
           onChange={(e) =>
-            onFilterChange({ addressee: e.target.value || undefined })
+            onFilterChange({ addresseeType: e.target.value || undefined })
           }
           className={SELECT_CLS}
         >
           <option value="">Alle Adressaten</option>
-          {addresseeOptions.map((opt) => (
-            <option key={opt.code} value={opt.code}>
-              {opt.label_de}
-            </option>
-          ))}
+          <option value="obliged">An Verpflichtete</option>
+          <option value="regulatory">An Aufsicht</option>
+          <option value="stakeholder">An interne Stakeholder</option>
         </select>
 
         <div className="ml-auto flex items-center gap-2">

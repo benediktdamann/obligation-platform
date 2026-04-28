@@ -7,7 +7,7 @@ type SearchParams = Promise<{
   source?: string;
   severity?: string;
   article?: string;
-  addressee?: string;
+  addresseeType?: string;
   page?: string;
   sortBy?: string;
   sortDir?: string;
@@ -25,7 +25,7 @@ export default async function ObligationsPage({
     source: params.source,
     severity: params.severity,
     article: params.article,
-    addressee: params.addressee,
+    addresseeType: params.addresseeType,
     page: params.page ? Math.max(1, parseInt(params.page)) : 1,
     sortBy: params.sortBy,
     sortDir: (params.sortDir === "desc" ? "desc" : "asc") as "asc" | "desc",
@@ -37,10 +37,6 @@ export default async function ObligationsPage({
     getObligations(filters),
   ]);
 
-  const addresseeOptions = Object.values(lookups.addresseeCategories)
-    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-    .map(({ code, label_de }) => ({ code, label_de }));
-
   return (
     <ObligationsBrowser
       obligations={obligations}
@@ -48,7 +44,6 @@ export default async function ObligationsPage({
       stats={stats}
       lookups={lookups}
       currentFilters={filters}
-      addresseeOptions={addresseeOptions}
     />
   );
 }

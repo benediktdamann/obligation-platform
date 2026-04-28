@@ -20,12 +20,14 @@ const SELECT_FIELDS = [
   "requirement_text_plain",
   "severity",
   "obligation_types",
-  "addressee_categories",
   "applicable_entity_types",
   "applies_to_jurisdictions",
   "effective_from",
   "implementation_guidance",
   "checklist_items",
+  "obliged_entities",
+  "internal_stakeholders",
+  "regulatory_authorities",
 ].join(", ");
 
 export async function getObligations(
@@ -46,8 +48,12 @@ export async function getObligations(
   if (filters.severity) query = query.eq("severity", filters.severity);
   if (filters.article)
     query = query.ilike("primary_article_ref", `%${filters.article}%`);
-  if (filters.addressee)
-    query = query.contains("addressee_categories", [filters.addressee]);
+  if (filters.addresseeType === "obliged")
+    query = query.not("obliged_entities", "is", null);
+  if (filters.addresseeType === "regulatory")
+    query = query.not("regulatory_authorities", "is", null);
+  if (filters.addresseeType === "stakeholder")
+    query = query.not("internal_stakeholders", "is", null);
 
   const sortField =
     filters.sortBy && ALLOWED_SORT_FIELDS.has(filters.sortBy)

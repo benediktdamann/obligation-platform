@@ -87,18 +87,40 @@ function TypesBadges({
 }
 
 function AddresseeCell({
-  addressee_categories,
+  obliged_entities,
+  internal_stakeholders,
   lookups,
 }: {
-  addressee_categories: string[] | null;
+  obliged_entities: string[] | null;
+  internal_stakeholders: string[] | null;
   lookups: SerializableLookups;
 }) {
-  const cats = addressee_categories ?? [];
-  if (!cats.length) return <span className="text-muted-foreground">—</span>;
-  const labels = cats.map((c) =>
-    translateCode(c, lookups.addresseeCategories)
+  const entities = obliged_entities ?? [];
+  const stakeholders = internal_stakeholders ?? [];
+
+  if (!entities.length && !stakeholders.length) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+
+  return (
+    <div className="space-y-0.5">
+      {entities.length > 0 && (
+        <p className="text-sm">
+          {entities
+            .map((e) => translateCode(e, lookups.obligedEntities))
+            .join(", ")}
+        </p>
+      )}
+      {stakeholders.length > 0 && (
+        <p className="text-xs text-muted-foreground">
+          + Stakeholder:{" "}
+          {stakeholders
+            .map((s) => translateCode(s, lookups.internalStakeholders))
+            .join(", ")}
+        </p>
+      )}
+    </div>
   );
-  return <span className="text-sm">{labels.join(", ")}</span>;
 }
 
 // ── Sortable header ──────────────────────────────────────────────────────────
@@ -256,7 +278,8 @@ export function ObligationsTable({
                 </TableCell>
                 <TableCell>
                   <AddresseeCell
-                    addressee_categories={o.addressee_categories}
+                    obliged_entities={o.obliged_entities}
+                    internal_stakeholders={o.internal_stakeholders}
                     lookups={lookups}
                   />
                 </TableCell>

@@ -14,6 +14,9 @@ export type SerializableLookups = {
   addresseeCategories: LookupMap;
   obligationTypes: LookupMap;
   severities: LookupMap;
+  obligedEntities: LookupMap;
+  internalStakeholders: LookupMap;
+  regulatoryAuthorities: LookupMap;
 };
 
 export function translateCode(code: string, lookup: LookupMap): string {

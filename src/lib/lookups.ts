@@ -36,13 +36,31 @@ async function fetchLookup(
 export async function getLookups(): Promise<SerializableLookups> {
   const supabase = await createServerClient();
 
-  const [entityTypes, addresseeCategories, obligationTypes, severities] =
-    await Promise.all([
-      fetchLookup(supabase, "lookup_entity_types"),
-      fetchLookup(supabase, "lookup_addressee_categories"),
-      fetchLookup(supabase, "lookup_obligation_types"),
-      fetchLookup(supabase, "lookup_severities"),
-    ]);
+  const [
+    entityTypes,
+    addresseeCategories,
+    obligationTypes,
+    severities,
+    obligedEntities,
+    internalStakeholders,
+    regulatoryAuthorities,
+  ] = await Promise.all([
+    fetchLookup(supabase, "lookup_entity_types"),
+    fetchLookup(supabase, "lookup_addressee_categories"),
+    fetchLookup(supabase, "lookup_obligation_types"),
+    fetchLookup(supabase, "lookup_severities"),
+    fetchLookup(supabase, "lookup_obliged_entities"),
+    fetchLookup(supabase, "lookup_internal_stakeholders"),
+    fetchLookup(supabase, "lookup_regulatory_authorities"),
+  ]);
 
-  return { entityTypes, addresseeCategories, obligationTypes, severities };
+  return {
+    entityTypes,
+    addresseeCategories,
+    obligationTypes,
+    severities,
+    obligedEntities,
+    internalStakeholders,
+    regulatoryAuthorities,
+  };
 }

@@ -8,12 +8,14 @@ export type Obligation = {
   requirement_text_plain: string | null;
   severity: string | null;
   obligation_types: string[] | null;
-  addressee_categories: string[] | null;
   applicable_entity_types: string[] | null;
   applies_to_jurisdictions: string[] | null;
   effective_from: string | null;
   implementation_guidance: string | null;
   checklist_items: string[] | null;
+  obliged_entities: string[] | null;
+  internal_stakeholders: string[] | null;
+  regulatory_authorities: string[] | null;
 };
 
 export type ObligationsFilters = {
@@ -21,7 +23,8 @@ export type ObligationsFilters = {
   source?: string;
   severity?: string;
   article?: string;
-  addressee?: string;
+  /** "obliged" | "regulatory" | "stakeholder" */
+  addresseeType?: string;
   page?: number;
   sortBy?: string;
   sortDir?: "asc" | "desc";

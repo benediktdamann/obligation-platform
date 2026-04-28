@@ -145,41 +145,44 @@ export function ObligationDrawer({ obligation, lookups, onClose }: Props) {
             </div>
           </Section>
 
-          {/* Verpflichtete */}
-          <Section title="Verpflichtete">
-            {(o.addressee_categories ?? []).length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">
-                  Adressat-Kategorien
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {o.addressee_categories!.map((c) => (
-                    <Badge key={c} variant="outline" className="text-xs">
-                      {translateCode(c, lookups.addresseeCategories)}
-                    </Badge>
-                  ))}
-                </div>
+          {/* Verpflichtete Einheiten */}
+          {(o.obliged_entities ?? []).length > 0 && (
+            <Section title="Verpflichtete Einheiten">
+              <div className="flex flex-wrap gap-1.5">
+                {o.obliged_entities!.map((e) => (
+                  <Badge key={e} variant="outline" className="text-xs">
+                    {translateCode(e, lookups.obligedEntities)}
+                  </Badge>
+                ))}
               </div>
-            )}
-            {(o.applicable_entity_types ?? []).length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">
-                  Anwendbare Institut-Typen
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {o.applicable_entity_types!.map((t) => (
-                    <Badge key={t} variant="outline" className="text-xs">
-                      {translateCode(t, lookups.entityTypes)}
-                    </Badge>
-                  ))}
-                </div>
+            </Section>
+          )}
+
+          {/* Interne Stakeholder */}
+          {(o.internal_stakeholders ?? []).length > 0 && (
+            <Section title="Interne Stakeholder">
+              <div className="flex flex-wrap gap-1.5">
+                {o.internal_stakeholders!.map((s) => (
+                  <Badge key={s} variant="outline" className="text-xs">
+                    {translateCode(s, lookups.internalStakeholders)}
+                  </Badge>
+                ))}
               </div>
-            )}
-            {!o.addressee_categories?.length &&
-              !o.applicable_entity_types?.length && (
-                <span className="text-sm text-muted-foreground">—</span>
-              )}
-          </Section>
+            </Section>
+          )}
+
+          {/* Aufsicht & Behörden */}
+          {(o.regulatory_authorities ?? []).length > 0 && (
+            <Section title="Aufsicht & Behörden">
+              <div className="flex flex-wrap gap-1.5">
+                {o.regulatory_authorities!.map((r) => (
+                  <Badge key={r} variant="outline" className="text-xs">
+                    {translateCode(r, lookups.regulatoryAuthorities)}
+                  </Badge>
+                ))}
+              </div>
+            </Section>
+          )}
 
           {/* Wo gilt das */}
           <Section title="Geltungsbereich">
