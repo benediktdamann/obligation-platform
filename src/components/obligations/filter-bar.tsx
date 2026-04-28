@@ -3,17 +3,25 @@
 import { Search, X, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ObligationsFilters } from "@/lib/obligation-types";
+import type { SerializableLookups, LookupMap } from "@/lib/lookup-types";
 
 const SELECT_CLS =
   "h-9 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 disabled:opacity-50 text-foreground";
 
+function sortedOptions(map: LookupMap) {
+  return Object.values(map).sort(
+    (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
+  );
+}
+
 type Props = {
   filters: ObligationsFilters;
+  lookups: SerializableLookups;
   onFilterChange: (updates: Partial<ObligationsFilters>) => void;
   isPending: boolean;
 };
 
-export function FilterBar({ filters, onFilterChange, isPending }: Props) {
+export function FilterBar({ filters, lookups, onFilterChange, isPending }: Props) {
   const [localSearch, setLocalSearch] = useState(filters.q ?? "");
   const [localArticle, setLocalArticle] = useState(filters.article ?? "");
   const searchRef = useRef<HTMLInputElement>(null);
@@ -31,7 +39,9 @@ export function FilterBar({ filters, onFilterChange, isPending }: Props) {
     filters.source ||
     filters.severity ||
     filters.article ||
-    filters.addresseeType
+    filters.obligedEntity ||
+    filters.internalStakeholder ||
+    filters.regulatoryAuthority
   );
 
   function handleReset() {
@@ -42,7 +52,9 @@ export function FilterBar({ filters, onFilterChange, isPending }: Props) {
       source: undefined,
       severity: undefined,
       article: undefined,
-      addresseeType: undefined,
+      obligedEntity: undefined,
+      internalStakeholder: undefined,
+      regulatoryAuthority: undefined,
     });
   }
 
@@ -115,18 +127,52 @@ export function FilterBar({ filters, onFilterChange, isPending }: Props) {
           className="h-9 w-28 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
 
-        {/* Adressaten-Typ */}
+        {/* Verpflichtete — codes from lookup_obliged_entities */}
         <select
-          value={filters.addresseeType ?? ""}
+          value={filters.obligedEntity ?? ""}
           onChange={(e) =>
-            onFilterChange({ addresseeType: e.target.value || undefined })
+            onFilterChange({ obligedEntity: e.target.value || undefined })
           }
           className={SELECT_CLS}
         >
-          <option value="">Alle Adressaten</option>
-          <option value="obliged">An Verpflichtete</option>
-          <option value="regulatory">An Aufsicht</option>
-          <option value="stakeholder">An interne Stakeholder</option>
+          <option value="">Alle Verpflichteten</option>
+          {sortedOptions(lookups.obligedEntities).map((e) => (
+            <option key={e.code} value={e.code}>
+              {e.label_de}
+            </option>
+          ))}
+        </select>
+
+        {/* Interne Stakeholder — codes from lookup_internal_stakeholders */}
+        <select
+          value={filters.internalStakeholder ?? ""}
+          onChange={(e) =>
+            onFilterChange({ internalStakeholder: e.target.value || undefined })
+          }
+          className={SELECT_CLS}
+        >
+          <option value="">Alle Stakeholder</option>
+          {sortedOptions(lookups.internalStakeholders).map((e) => (
+            <option key={e.code} value={e.code}>
+              {e.label_de}
+            </option>
+          ))}
+        </select>
+
+        {/* Aufsicht — codes from lookup_regulatory_authorities */}
+        <select
+          value={filters.regulatoryAuthority ?? ""}
+          onChange={(e) =>
+            onFilterChange({ regulatoryAuthority: e.target.value || undefined })
+          }
+          className={SELECT_CLS}
+        >
+          <option value="">Alle Aufsicht</option>
+          {sortedOptions(lookups.regulatoryAuthorities).map((e) => (
+            <option key={e.code} value={e.code}>
+              {e.label_de}
+            </option>
+          ))}
         </select>
 
         <div className="ml-auto flex items-center gap-2">

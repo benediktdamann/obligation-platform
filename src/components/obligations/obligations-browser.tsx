@@ -52,7 +52,9 @@ export function ObligationsBrowser({
       if (merged.source) params.set("source", merged.source);
       if (merged.severity) params.set("severity", merged.severity);
       if (merged.article) params.set("article", merged.article);
-      if (merged.addresseeType) params.set("addresseeType", merged.addresseeType);
+      if (merged.obligedEntity) params.set("obligedEntity", merged.obligedEntity);
+      if (merged.internalStakeholder) params.set("internalStakeholder", merged.internalStakeholder);
+      if (merged.regulatoryAuthority) params.set("regulatoryAuthority", merged.regulatoryAuthority);
       if (merged.sortBy) params.set("sortBy", merged.sortBy);
       if (merged.sortDir) params.set("sortDir", merged.sortDir);
       if (merged.page && merged.page > 1)
@@ -80,7 +82,9 @@ export function ObligationsBrowser({
     currentFilters.source ||
     currentFilters.severity ||
     currentFilters.article ||
-    currentFilters.addresseeType
+    currentFilters.obligedEntity ||
+    currentFilters.internalStakeholder ||
+    currentFilters.regulatoryAuthority
   );
 
   return (
@@ -107,6 +111,7 @@ export function ObligationsBrowser({
 
         <FilterBar
           filters={currentFilters}
+          lookups={lookups}
           onFilterChange={updateFilters}
           isPending={isPending}
         />

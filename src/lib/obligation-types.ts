@@ -23,8 +23,9 @@ export type ObligationsFilters = {
   source?: string;
   severity?: string;
   article?: string;
-  /** "obliged" | "regulatory" | "stakeholder" */
-  addresseeType?: string;
+  obligedEntity?: string;
+  internalStakeholder?: string;
+  regulatoryAuthority?: string;
   page?: number;
   sortBy?: string;
   sortDir?: "asc" | "desc";

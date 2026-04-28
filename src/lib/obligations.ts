@@ -47,19 +47,13 @@ function applyFilters(query: any, filters: ObligationsFilters): any {
   if (filters.article)
     query = query.ilike("primary_article_ref", `%${filters.article}%`);
 
-  // Check IS NOT NULL *and* != '{}' to exclude rows with empty arrays
-  if (filters.addresseeType === "obliged")
-    query = query
-      .not("obliged_entities", "is", null)
-      .neq("obliged_entities", "{}");
-  if (filters.addresseeType === "regulatory")
-    query = query
-      .not("regulatory_authorities", "is", null)
-      .neq("regulatory_authorities", "{}");
-  if (filters.addresseeType === "stakeholder")
-    query = query
-      .not("internal_stakeholders", "is", null)
-      .neq("internal_stakeholders", "{}");
+  // array @> '{code}' — rows where the array contains the specific code
+  if (filters.obligedEntity)
+    query = query.contains("obliged_entities", [filters.obligedEntity]);
+  if (filters.regulatoryAuthority)
+    query = query.contains("regulatory_authorities", [filters.regulatoryAuthority]);
+  if (filters.internalStakeholder)
+    query = query.contains("internal_stakeholders", [filters.internalStakeholder]);
 
   return query;
 }

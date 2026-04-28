@@ -7,7 +7,9 @@ type SearchParams = Promise<{
   source?: string;
   severity?: string;
   article?: string;
-  addresseeType?: string;
+  obligedEntity?: string;
+  internalStakeholder?: string;
+  regulatoryAuthority?: string;
   page?: string;
   sortBy?: string;
   sortDir?: string;
@@ -25,7 +27,9 @@ export default async function ObligationsPage({
     source: params.source,
     severity: params.severity,
     article: params.article,
-    addresseeType: params.addresseeType,
+    obligedEntity: params.obligedEntity,
+    internalStakeholder: params.internalStakeholder,
+    regulatoryAuthority: params.regulatoryAuthority,
     page: params.page ? Math.max(1, parseInt(params.page)) : 1,
     sortBy: params.sortBy,
     sortDir: (params.sortDir === "desc" ? "desc" : "asc") as "asc" | "desc",
