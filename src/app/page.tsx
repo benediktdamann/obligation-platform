@@ -1,89 +1,85 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, Calendar, FileText, Newspaper, Database } from "lucide-react";
+import { SiteNav } from "@/components/site-nav";
 
 const features = [
   {
     href: "/target-dates",
     icon: Calendar,
     title: "Target Dates",
-    description: "Jeder regulatorische Meilenstein in einer Übersicht — Countdown zur nächsten Frist.",
+    description: "Every regulatory milestone in one timeline — countdown to next critical deadline.",
+    accentBg: "bg-rose-50 dark:bg-rose-950/30",
+    accentText: "text-rose-600 dark:text-rose-400",
   },
   {
     href: "/obligations",
     icon: FileText,
     title: "Obligations",
-    description: "Alle Pflichten aus AMLR, AMLD6 und ToFR — durchsuchbar, filterbar, annotierbar.",
+    description: "Searchable, filterable register of every duty under AMLR, AMLD6, and ToFR.",
+    accentBg: "bg-indigo-50 dark:bg-indigo-950/30",
+    accentText: "text-indigo-600 dark:text-indigo-400",
   },
   {
     href: "/news",
     icon: Newspaper,
-    title: "Regulatory Intelligence",
-    description: "Tägliche Updates von AMLA, EBA, BaFin und FATF mit Link zu betroffenen Pflichten.",
+    title: "Intelligence",
+    description: "Daily updates from AMLA, EBA, BaFin, FATF with auto-linked obligations.",
+    accentBg: "bg-violet-50 dark:bg-violet-950/30",
+    accentText: "text-violet-600 dark:text-violet-400",
   },
   {
     href: "/sources",
     icon: Database,
     title: "Sources",
-    description: "Vollständige Quellenliste mit Crawler-Status und Aktualisierungs-Frequenz.",
+    description: "Complete source registry with crawler status and update frequency.",
+    accentBg: "bg-emerald-50 dark:bg-emerald-950/30",
+    accentText: "text-emerald-600 dark:text-emerald-400",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto max-w-5xl px-6 py-24">
-        <div className="flex flex-col items-center text-center gap-6">
-          <Badge variant="secondary" className="px-3 py-1 text-xs font-medium">
-            EU Regulatory Framework · AMLR 2027
-          </Badge>
-          <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <SiteNav />
+      <main className="mx-auto max-w-5xl px-6 py-20">
+        <div className="flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            AMLR enters force in{" "}
+            <span className="font-semibold text-slate-900 dark:text-slate-100">July 2027</span>
+          </div>
+          <h1 className="mt-6 text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-50 sm:text-6xl">
             Obligation Platform
           </h1>
-          <p className="max-w-2xl text-xl text-muted-foreground">
-            EU AML/CFT Regulatory Compliance Platform
-          </p>
-          <Separator className="my-4 max-w-xs" />
-          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Zentralisierte Plattform für Pflichten unter AMLR, AMLD6, ToFR und verwandten
-            EU-Rahmenwerken. Gebaut für Compliance-Teams, die sich auf den 10. Juli 2027
-            vorbereiten.
+          <p className="mt-4 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+            Centralized view of every AML/CFT obligation, target date, and regulatory update — built for compliance teams preparing for AMLR direct supervision.
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;
             return (
               <Link key={feature.title} href={feature.href} className="group">
-                <Card className="border border-border transition-shadow hover:shadow-md">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">
-                        <Icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-base font-semibold">{feature.title}</CardTitle>
-                      <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                <div className="h-full rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${feature.accentBg}`}>
+                      <Icon className={`h-5 w-5 ${feature.accentText}`} />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-50">{feature.title}</h3>
+                        <ArrowRight className="h-4 w-4 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+                      </div>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </Link>
             );
           })}
-        </div>
-
-        <div className="mt-8 flex justify-center">
-          <p className="text-xs text-muted-foreground">
-            Built for compliance teams operating under EU AML/CFT regulations
-          </p>
         </div>
       </main>
     </div>

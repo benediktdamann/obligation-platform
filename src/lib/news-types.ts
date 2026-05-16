@@ -29,26 +29,29 @@ export const AUTHORITY_LABELS: Record<string, string> = {
 };
 
 export const AUTHORITY_CLS: Record<string, string> = {
-  AMLA: "border-blue-300 bg-blue-100 text-blue-900",
-  EBA: "border-purple-300 bg-purple-100 text-purple-900",
-  BAFIN: "border-green-300 bg-green-100 text-green-900",
-  BaFin: "border-green-300 bg-green-100 text-green-900",
-  FATF: "border-orange-300 bg-orange-100 text-orange-900",
+  AMLA: "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-400",
+  EBA: "border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-900/50 dark:bg-violet-950/30 dark:text-violet-400",
+  BAFIN: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-400",
+  BaFin: "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-400",
+  FATF: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-400",
 };
 
 export const URGENCY_LABELS: Record<string, string> = {
-  high: "Hoch", High: "Hoch",
-  medium: "Mittel", Medium: "Mittel",
-  low: "Niedrig", Low: "Niedrig",
+  high: "High", High: "High",
+  medium: "Medium", Medium: "Medium",
+  low: "Low", Low: "Low",
 };
 
-export const URGENCY_CLS: Record<string, string> = {
-  high: "border-red-300 bg-red-100 text-red-900",
-  High: "border-red-300 bg-red-100 text-red-900",
-  medium: "border-yellow-300 bg-yellow-100 text-yellow-900",
-  Medium: "border-yellow-300 bg-yellow-100 text-yellow-900",
-  low: "border-slate-300 bg-slate-100 text-slate-700",
-  Low: "border-slate-300 bg-slate-100 text-slate-700",
+export const URGENCY_STRIPE: Record<string, string> = {
+  high: "border-l-rose-500", High: "border-l-rose-500",
+  medium: "border-l-amber-500", Medium: "border-l-amber-500",
+  low: "border-l-slate-300", Low: "border-l-slate-300",
+};
+
+export const URGENCY_DOT: Record<string, string> = {
+  high: "bg-rose-500", High: "bg-rose-500",
+  medium: "bg-amber-500", Medium: "bg-amber-500",
+  low: "bg-slate-400", Low: "bg-slate-400",
 };
 
 export const NEWS_PAGE_SIZE = 25;

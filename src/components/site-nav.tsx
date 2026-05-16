@@ -1,0 +1,48 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const links = [
+  { href: "/target-dates", label: "Target Dates" },
+  { href: "/obligations", label: "Obligations" },
+  { href: "/news", label: "Intelligence" },
+  { href: "/sources", label: "Sources" },
+];
+
+export function SiteNav() {
+  const pathname = usePathname();
+
+  return (
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/70 bg-white/80 backdrop-blur-md dark:border-slate-800/70 dark:bg-slate-950/80">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-8">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-indigo-700">
+            <span className="text-xs font-bold text-white">O</span>
+          </div>
+          <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+            Obligation
+          </span>
+        </Link>
+        <nav className="flex items-center gap-0.5">
+          {links.map((link) => {
+            const active = pathname?.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </header>
+  );
+}
