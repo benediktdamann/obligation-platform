@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/target-dates", label: "Target Dates" },
+  { href: "/clients", label: "Mandate" },
   { href: "/obligations", label: "Obligations" },
+  { href: "/target-dates", label: "Target Dates" },
   { href: "/news", label: "News" },
   { href: "/sources", label: "Sources" },
 ];
 
 export function SiteNav() {
   const pathname = usePathname();
-
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-8">
@@ -30,9 +30,7 @@ export function SiteNav() {
                 key={link.href}
                 href={link.href}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-slate-800 text-slate-50"
-                    : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-50"
+                  active ? "bg-slate-800 text-slate-50" : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-50"
                 }`}
               >
                 {link.label}
