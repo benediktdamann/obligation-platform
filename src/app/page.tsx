@@ -1,89 +1,82 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Calendar, FileText, Newspaper, Database } from "lucide-react";
+import { ArrowUpRight, Calendar, FileText, Newspaper, Database } from "lucide-react";
+import { SiteNav } from "@/components/site-nav";
 
-const features = [
+const tiles = [
   {
     href: "/target-dates",
     icon: Calendar,
     title: "Target Dates",
-    description: "Jeder regulatorische Meilenstein in einer Übersicht — Countdown zur nächsten Frist.",
+    description: "Regulatory milestones & countdowns",
+    accent: "text-rose-400",
+    accentBg: "bg-rose-500/10",
   },
   {
     href: "/obligations",
     icon: FileText,
     title: "Obligations",
-    description: "Alle Pflichten aus AMLR, AMLD6 und ToFR — durchsuchbar, filterbar, annotierbar.",
+    description: "Searchable register of duties",
+    accent: "text-indigo-400",
+    accentBg: "bg-indigo-500/10",
   },
   {
     href: "/news",
     icon: Newspaper,
-    title: "Regulatory Intelligence",
-    description: "Tägliche Updates von AMLA, EBA, BaFin und FATF mit Link zu betroffenen Pflichten.",
+    title: "News",
+    description: "Daily updates, auto-linked",
+    accent: "text-violet-400",
+    accentBg: "bg-violet-500/10",
   },
   {
     href: "/sources",
     icon: Database,
     title: "Sources",
-    description: "Vollständige Quellenliste mit Crawler-Status und Aktualisierungs-Frequenz.",
+    description: "Registry & crawler status",
+    accent: "text-emerald-400",
+    accentBg: "bg-emerald-500/10",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto max-w-5xl px-6 py-24">
-        <div className="flex flex-col items-center text-center gap-6">
-          <Badge variant="secondary" className="px-3 py-1 text-xs font-medium">
-            EU Regulatory Framework · AMLR 2027
-          </Badge>
-          <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+    <div className="min-h-screen bg-slate-950">
+      <SiteNav />
+      <main className="mx-auto max-w-5xl px-6 py-16">
+        <div className="flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            AMLR enters force in <span className="font-semibold text-slate-200">July 2027</span>
+          </div>
+          <h1 className="mt-6 text-5xl font-bold tracking-tight text-slate-50 sm:text-6xl">
             Obligation Platform
           </h1>
-          <p className="max-w-2xl text-xl text-muted-foreground">
-            EU AML/CFT Regulatory Compliance Platform
-          </p>
-          <Separator className="my-4 max-w-xs" />
-          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Zentralisierte Plattform für Pflichten unter AMLR, AMLD6, ToFR und verwandten
-            EU-Rahmenwerken. Gebaut für Compliance-Teams, die sich auf den 10. Juli 2027
-            vorbereiten.
+          <p className="mt-4 max-w-2xl text-base text-slate-400">
+            Centralized view of every AML/CFT obligation, target date, and regulatory update — built for compliance teams preparing for AMLR direct supervision.
           </p>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {features.map((feature) => {
-            const Icon = feature.icon;
+        <div className="mt-12 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {tiles.map((tile) => {
+            const Icon = tile.icon;
             return (
-              <Link key={feature.title} href={feature.href} className="group">
-                <Card className="border border-border transition-shadow hover:shadow-md">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">
-                        <Icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <CardTitle className="text-base font-semibold">{feature.title}</CardTitle>
-                      <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              <Link key={tile.title} href={tile.href} className="group">
+                <div className="h-full rounded-xl border border-slate-800 bg-slate-900 p-5 transition-all hover:border-slate-700 hover:bg-slate-900/80">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${tile.accentBg}`}>
+                      <Icon className={`h-5 w-5 ${tile.accent}`} />
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-base font-semibold text-slate-50">{tile.title}</h3>
+                        <ArrowUpRight className="h-3.5 w-3.5 text-slate-500 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-slate-300" />
+                      </div>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-400">{tile.description}</p>
+                    </div>
+                  </div>
+                </div>
               </Link>
             );
           })}
-        </div>
-
-        <div className="mt-8 flex justify-center">
-          <p className="text-xs text-muted-foreground">
-            Built for compliance teams operating under EU AML/CFT regulations
-          </p>
         </div>
       </main>
     </div>
